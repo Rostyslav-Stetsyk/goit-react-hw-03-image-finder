@@ -1,11 +1,12 @@
-import { ModalImg, ModalWindow, Overlay } from './Modal.styled';
+import { ModalImg, Overlay } from './Modal.styled';
 
 export const Modal = ({ img, closeModal }) => {
+  const closeModalClickOnOverlay = e => {
+    if (e.target.localName === 'div') closeModal();
+  };
   return (
-    <Overlay onClick={closeModal}>
-      <ModalWindow>
-        <ModalImg src={img} alt="Big img" />
-      </ModalWindow>
+    <Overlay onClick={closeModalClickOnOverlay}>
+      <ModalImg src={img} alt="Big img" />
     </Overlay>
   );
 };

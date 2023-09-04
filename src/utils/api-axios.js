@@ -4,7 +4,7 @@ const MAIN_DOMEN = 'https://pixabay.com/api/'
 const DEFAULT_PARAMS = {
     key: '38365301-8fc0cf151ce2e32a6ee0bdda0',
     image_type: 'photo',
-    orientation: 'horiaontal',
+    orientation: 'horizontal',
     per_page: 12
 }
 

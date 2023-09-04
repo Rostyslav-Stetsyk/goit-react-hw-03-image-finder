@@ -14,45 +14,46 @@ export class App extends Component {
     loaderVisible: false,
   };
 
+  async componentDidUpdate(prevProps, prevState) {
+    if (
+      this.state.page !== prevState.page ||
+      this.state.query !== prevState.query
+    ) {
+      const query = this.state.query.split('/')[1];
+
+      try {
+        this.setState({ loaderVisible: true });
+        const resp = await getImages(query, this.state.page);
+        this.setState(prevState => ({
+          cards: [...prevState.cards, ...resp.hits],
+          totalHits: resp.totalHits,
+        }));
+      } catch {
+        this.setState({ error: true });
+      } finally {
+        this.setState({ loaderVisible: false });
+      }
+    }
+  }
+
   onSubmitQuery = async e => {
     e.preventDefault();
-    if (e.target[0].value === this.state.query) return;
+    if (!e.target[0].value) return;
+
+    const id = new Date();
+    const query = `${id}/${e.target[0].value}`;
 
     this.setState({
-      query: e.target[0].value,
+      query,
       cards: [],
       error: false,
       totalHits: -1,
       page: 1,
     });
-
-    try {
-      this.setState({ loaderVisible: true });
-      const resp = await getImages(e.target[0].value, 1);
-      this.setState(prevState => ({
-        cards: [...prevState.cards, ...resp.hits],
-        totalHits: resp.totalHits,
-        page: prevState.page + 1,
-      }));
-    } catch {
-      this.setState({ error: true });
-    } finally {
-      this.setState({ loaderVisible: false });
-    }
   };
 
   onLoadMore = async () => {
     this.setState(prevState => ({ page: prevState.page + 1 }));
-
-    try {
-      const resp = await getImages(this.state.query, this.state.page);
-      this.setState(prevState => ({
-        cards: [...prevState.cards, ...resp.hits],
-        totalHits: resp.totalHits,
-      }));
-    } catch {
-      this.setState({ error: true });
-    }
   };
 
   render() {
